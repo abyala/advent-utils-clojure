@@ -1,4 +1,4 @@
-(ns abyala.advent-utils-clojure.algorithms)
+(ns abyala.advent-utils-clojure.search)
 
 (defn- no-next-vals-fn [_] nil)
 
