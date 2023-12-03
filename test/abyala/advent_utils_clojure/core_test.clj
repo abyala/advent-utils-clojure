@@ -3,6 +3,17 @@
             [clojure.test :refer :all]
             [abyala.advent-utils-clojure.core :as c]))
 
+(deftest digit?-test
+  (are [c] (c/digit? c)
+           \0
+           \1
+           \9)
+  (are [c] (not (c/digit? c))
+           \space
+           \A
+           \-
+           \.))
+
 (deftest count-if-test
   (are [input expected] (= expected (c/count-if even? input))
                         nil 0

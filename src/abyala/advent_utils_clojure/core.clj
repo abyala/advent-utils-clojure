@@ -2,6 +2,12 @@
   (:require [clojure.string :as str]))
 
 (def block-char \█)
+
+(defn digit?
+  "Convenience wrapper for Java's static `Character.isDigit` method."
+  [^Character c]
+  (Character/isDigit c))
+
 (defn parse-binary
   "Parses a string that represents a binary number into its decimal value."
   [s]
