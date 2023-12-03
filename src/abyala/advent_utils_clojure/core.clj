@@ -106,3 +106,13 @@
   ([supp m k v] (if ((or m {}) k)
                   (update m k conj v)
                   (assoc m k (supp v)))))
+
+(defn re-matcher-seq
+  "Returns a lazy sequence of maps from applying a regular expression `re` to the string `s`. Each returned map
+  will be of form `{:value v, :start x, :end y}` where `:value` is the text value from the captured group, and
+  `:start` and `:end` are the start and end indexes of that group's characters."
+  [re s]
+  (letfn [(next-value [m] (when (.find m)
+                            (cons {:value (.group m), :start (.start m), :end (.end m)}
+                                  (lazy-seq (next-value m)))))]
+    (next-value (re-matcher re s))))

@@ -135,3 +135,10 @@
                         [] ()
                         [1 3 5] [1 3 5]
                         [1 3 5 6 7] (list 1 3 5 6)))
+
+(deftest re-matcher-seq-test
+  (are [pattern s expected] (= (c/re-matcher-seq pattern s) expected)
+                            #"\d+" "abc" nil
+                            #"\d+" "ab12c" [{:value "12", :start 2, :end 4}]
+                            #"\w+" "Hello, world!" [{:value "Hello", :start 0, :end 5}
+                                                    {:value "world", :start 7, :end 12}]))
