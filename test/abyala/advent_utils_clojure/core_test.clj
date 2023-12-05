@@ -142,3 +142,11 @@
                             #"\d+" "ab12c" [{:value "12", :start 2, :end 4}]
                             #"\w+" "Hello, world!" [{:value "Hello", :start 0, :end 5}
                                                     {:value "world", :start 7, :end 12}]))
+
+(deftest split-longs-test
+  (are [input expected] (= (c/split-longs input) expected)
+                        "1" [1]
+                        "12" [12]
+                        "1 2" [1 2]
+                        "abc" ()
+                        "abc12de34f" [12 34]))
