@@ -14,8 +14,8 @@
            \-
            \.))
 
-(deftest count-if-test
-  (are [input expected] (= expected (c/count-if even? input))
+(deftest count-when-test
+  (are [input expected] (= expected (c/count-when even? input))
                         nil 0
                         () 0
                         [] 0

@@ -45,7 +45,7 @@
   [input]
   (map parse-long (re-seq #"\d+" input)))
 
-(defn count-if
+(defn count-when
   "Returns the number of items in a collection that return a truthy response to a predicate filter."
   [pred coll]
   (count (filter pred coll)))
