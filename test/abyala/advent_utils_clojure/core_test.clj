@@ -23,16 +23,6 @@
                         [3 4 5] 1
                         (range 10) 5))
 
-(deftest divisible-test
-  (are [num den] (true? (c/divisible? num den))
-                 9 3
-                 3 3
-                 3 1)
-  (are [num den] (false? (c/divisible? num den))
-                 9 4
-                 3 2
-                 2 3))
-
 (deftest first-when-test
   (are [input] (nil? (c/first-when even? input))
                nil
@@ -119,14 +109,6 @@
   (is (thrown? Exception (c/parse-int-char \-)))
   (is (thrown? Exception (c/parse-int-char \space)))
   (is (thrown? Exception (c/parse-int-char \a))))
-
-(deftest signum-test
-  (are [input expected] (= expected (c/signum input))
-                        0 0
-                        1 1
-                        5 1
-                        -1 -1
-                        -4 -1))
 
 (deftest take-until-test
   (are [input expected] (= expected (c/take-until even? input))

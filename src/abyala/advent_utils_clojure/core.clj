@@ -74,17 +74,6 @@
          (list (first s))
          (cons (first s) (take-until pred (rest s))))))))
 
-
-(defn divisible? [num denom]
-  (zero? (rem num denom)))
-
-(defn signum
-  "Given a number `n`, returns -1, 0, or 1 based on if the number is negative, zero, or positive."
-  [n]
-  (cond (zero? n) 0
-        (neg? n) -1
-        :else 1))
-
 (defn first-when [pred coll]
   (first (filter pred coll)))
 
