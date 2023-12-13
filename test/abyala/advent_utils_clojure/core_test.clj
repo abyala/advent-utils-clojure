@@ -132,3 +132,22 @@
                         "1 2" [1 2]
                         "abc" ()
                         "abc12de34f" [12 34]))
+
+(deftest subs-to-end-test
+  (testing "No end value"
+    (are [s idx expected] (= (c/subs-to-end s idx) expected)
+                          "Hello" 0 "Hello"
+                          "Hello" 1 "ello"
+                          "Hello" 4 "o"
+                          "Hello" 5 ""
+                          "" 0 ""
+                          "" 1 ""))
+  (testing "With end value"
+    (are [s start end expected] (= (c/subs-to-end s start end) expected)
+                                "Hello" 0 1 "H"
+                                "Hello" 1 4 "ell"
+                                "Hello" 1 5 "ello"
+                                "Hello" 1 6 "ello"
+                                "Hello" 5 1 ""
+                                "" 0 2 ""
+                                "" 1 2 "")))

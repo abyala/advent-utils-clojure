@@ -111,3 +111,12 @@
                             (cons {:value (.group m), :start (.start m), :end (.end m)}
                                   (lazy-seq (next-value m)))))]
     (next-value (re-matcher re s))))
+
+(defn subs-to-end
+  "Returns the substring of s beginning at start inclusive, and ending at end (defaulting to length of string)
+  exclusive. Effectively the same as Clojure's built-in subs function, but it terminates at the end of the string
+  instead of throwing a StringIndexOutOfBoundsException."
+  ([s start] (if (< start (count s)) (subs s start) ""))
+  ([s start end] (if (< start (count s))
+                   (subs s start (min end (count s)))
+                   "")))
