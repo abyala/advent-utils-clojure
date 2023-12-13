@@ -120,3 +120,8 @@
   ([s start end] (if (< start (count s))
                    (subs s start (min end (count s)))
                    "")))
+
+(defn repeat-string
+  "Creates a string by repeating a value `s` a number of times."
+  [n s]
+  (apply str (repeat n s)))

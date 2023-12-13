@@ -151,3 +151,11 @@
                                 "Hello" 5 1 ""
                                 "" 0 2 ""
                                 "" 1 2 "")))
+
+(deftest repeat-string-test
+  (are [n s expected] (= (c/repeat-string n s) expected)
+                      0 "a" ""
+                      1 "a" "a"
+                      3 "a" "aaa"
+                      3 :b ":b:b:b"
+                      3 5 "555"))
