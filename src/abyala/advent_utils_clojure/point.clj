@@ -23,26 +23,6 @@
   ([input] (parse-to-char-coords-map identity input))
   ([f input] (into {} (parse-to-char-coords f input))))
 
-(defn inclusive-distance [[x1 y1] [x2 y2]]
-  (letfn [(local-dist [^long v1 ^long v2] (Math/abs (- v1 v2)))]
-    (inc (max (local-dist x1 x2)
-              (local-dist y1 y2)))))
-
-(defn infinite-points-from [[x1 y1] [x2 y2]]
-  (letfn [(ordinate-fn [v1 v2] (cond (< v1 v2) inc
-                                     (> v1 v2) dec
-                                     :else identity))]
-    (let [x-fn (ordinate-fn x1 x2)
-          y-fn (ordinate-fn y1 y2)]
-      (map vector (iterate x-fn x1) (iterate y-fn y1)))))
-
-(defn inclusive-line-between
-  ([[point1 point2]]
-   (inclusive-line-between point1 point2))
-
-  ([point1 point2]
-   (take (inclusive-distance point1 point2) (infinite-points-from point1 point2))))
-
 (defn horizontal-line?
   ([[point1 point2]] (horizontal-line? point1 point2))
   ([[_ y1] [_ y2]] (= y1 y2)))
@@ -79,3 +59,34 @@
     (let [[x-min x-max] (->> points (map first) min-max)
           [y-min y-max] (->> points (map second) min-max)]
       [[x-min y-min] [x-max y-max]])))
+
+(defn- looped-pairs [vertices]
+  (if (not= (first vertices) (last vertices))
+    (recur (conj (vec vertices) (first vertices)))
+    (partition 2 1 vertices)))
+
+(defn polygon-area
+  "Takes a sequence of [x y] vertices and returns the total area of the polygon. The vertices can either start and end
+  with the same value, or else the function will close the polygon itself.
+
+  This function makes use of the Shoelace Formula."
+  ([vertices] (abs (/ (transduce (map (partial apply polygon-area)) + (looped-pairs vertices)) 2)))
+  ([[x1 y1] [x2 y2]] (- (* x1 y2) (* x2 y1))))
+
+(defn perimeter
+  "Takes a sequence of [x y] vertices and returns the perimeter from walking in order from point to point. The vertices
+  can either start and end with the same value, or else the function will close the path itself."
+  [vertices]
+  (transduce (map (partial apply manhattan-distance)) + (looped-pairs vertices)))
+
+(defn total-points-within-path
+  "Calculates the total number of points enclosed by a sequence of vertices that represent a closed loop; the result is
+  total number of points, including both the perimeter of the path of vertices and the points enclosed within. The
+  verfices can either start and end with the same value, or else the function will close the path itself.
+
+  This function makes use of Pick's Theorem."
+  [vertices]
+  (let [area (polygon-area vertices)
+        perimeter (perimeter vertices)
+        interior (- (inc area) (/ perimeter 2))]
+    (+ perimeter interior)))
