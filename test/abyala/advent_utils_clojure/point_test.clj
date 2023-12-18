@@ -34,6 +34,25 @@
                [4 5] [3 6]
                [4 5] [3 5]))
 
+(deftest perimeter-test
+  (testing "Closed perimeter"                               ; First value in path matches the last
+    (are [points expected] (= (p/perimeter-length points) expected)
+                           () 0
+                           [[1 1]] 0
+                           [[1 1] [1 1]] 0
+                           [[1 1] [3 1] [1 1]] 4
+                           [[3 1] [1 1] [3 1]] 4
+                           [[1 1] [4 2] [1 1]] 8
+                           [[1 1] [3 1] [3 5] [1 5] [1 1]] 12
+                           [[1 1] [1 5] [3 5] [3 1] [1 1]] 12))
+  (testing "Unclosed perimeter"
+    (are [points expected] (= (p/perimeter-length points) expected)
+                           [[1 1] [3 1]] 4
+                           [[3 1] [1 1]] 4
+                           [[1 1] [4 2]] 8
+                           [[1 1] [3 1] [3 5] [1 5]] 12
+                           [[1 1] [1 5] [3 5] [3 1]] 12)))
+
 (deftest polygon-area-test
   ; Must use == instead of = because the type of polygon-area is a ratio, not a decimal
   (are [points expected] (== (p/polygon-area points) expected)
@@ -49,27 +68,8 @@
                          [[1 6] [3 1] [7 2] [4 4] [8 5]] 16.5 ;Test from Wikipedia
                          [[1 6] [3 1] [7 2] [4 4] [8 5] [1 6]] 16.5))
 
-(deftest perimeter-test
-  (testing "Closed perimeter"                               ; First value in path matches the last
-    (are [points expected] (= (p/perimeter points) expected)
-                           () 0
-                           [[1 1]] 0
-                           [[1 1] [1 1]] 0
-                           [[1 1] [3 1] [1 1]] 4
-                           [[3 1] [1 1] [3 1]] 4
-                           [[1 1] [4 2] [1 1]] 8
-                           [[1 1] [3 1] [3 5] [1 5] [1 1]] 12
-                           [[1 1] [1 5] [3 5] [3 1] [1 1]] 12))
-  (testing "Unclosed perimeter"
-    (are [points expected] (= (p/perimeter points) expected)
-                           [[1 1] [3 1]] 4
-                           [[3 1] [1 1]] 4
-                           [[1 1] [4 2]] 8
-                           [[1 1] [3 1] [3 5] [1 5]] 12
-                           [[1 1] [1 5] [3 5] [3 1]] 12)))
-
-(deftest total-points-within-path-test
-  (are [points expected] (= (p/total-points-within-path points) expected)
+(deftest polygon-total-point-count-test
+  (are [points expected] (= (p/polygon-total-point-count points) expected)
                          [[1 1]] 1
                          [[1 1] [1 3]] 3
                          [[3 1] [1 1]] 3
@@ -81,3 +81,17 @@
 
                          ; Looks like a dumbbell or a fat letter H
                          [[0 0] [0 3] [2 3] [2 2] [4 2] [4 3] [6 3] [6 0] [4 0] [4 1] [2 1] [2 0]] 26))
+
+(deftest polygon-interior-point-count-test
+  (are [points expected] (= (p/polygon-interior-point-count points) expected)
+                         [[1 1]] 0
+                         [[1 1] [1 3]] 0
+                         [[3 1] [1 1]] 0
+                         [[1 1] [1 4] [5 4] [5 1]] 6
+                         [[1 1] [5 1] [5 4] [1 4]] 6
+
+                         ; Figure L with no interior points
+                         [[0 0] [2 0] [2 1] [1 1] [1 3] [0 3]] 0
+
+                         ; Looks like a dumbbell or a fat letter H
+                         [[0 0] [0 3] [2 3] [2 2] [4 2] [4 3] [6 3] [6 0] [4 0] [4 1] [2 1] [2 0]] 4))

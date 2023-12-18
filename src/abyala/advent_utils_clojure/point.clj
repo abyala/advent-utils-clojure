@@ -65,6 +65,12 @@
     (recur (conj (vec vertices) (first vertices)))
     (partition 2 1 vertices)))
 
+(defn perimeter-length
+  "Takes a sequence of [x y] vertices and returns the length of the perimeter from walking in order from point to
+  point. The vertices can either start and end with the same value, or else the function will close the path itself."
+  [vertices]
+  (transduce (map (partial apply manhattan-distance)) + (looped-pairs vertices)))
+
 (defn polygon-area
   "Takes a sequence of [x y] vertices and returns the total area of the polygon. The vertices can either start and end
   with the same value, or else the function will close the polygon itself.
@@ -73,20 +79,28 @@
   ([vertices] (abs (/ (transduce (map (partial apply polygon-area)) + (looped-pairs vertices)) 2)))
   ([[x1 y1] [x2 y2]] (- (* x1 y2) (* x2 y1))))
 
-(defn perimeter
-  "Takes a sequence of [x y] vertices and returns the perimeter from walking in order from point to point. The vertices
-  can either start and end with the same value, or else the function will close the path itself."
-  [vertices]
-  (transduce (map (partial apply manhattan-distance)) + (looped-pairs vertices)))
-
-(defn total-points-within-path
-  "Calculates the total number of points enclosed by a sequence of vertices that represent a closed loop; the result is
-  total number of points, including both the perimeter of the path of vertices and the points enclosed within. The
-  verfices can either start and end with the same value, or else the function will close the path itself.
+(defn polygon-total-point-count
+  "Calculates the total number of points that compose a polygon. The input `vertices` is a sequence of ordered points
+   that define the perimeter of the polygon in a closed loop; if the vertices do not start and end with the same value,
+   the function will close it. The output is the total number of points in the polygon, including both the perimeter
+   and any internal points.
 
   This function makes use of Pick's Theorem."
   [vertices]
   (let [area (polygon-area vertices)
-        perimeter (perimeter vertices)
+        perimeter (perimeter-length vertices)
         interior (- (inc area) (/ perimeter 2))]
     (+ perimeter interior)))
+
+(defn polygon-interior-point-count
+  "Calculates the total number of points that lie stricly inside a polygon. The input `vertices` is a sequence of
+  ordered points that define the perimeter of the polygon in a closed loop; if the vertices do not start and end with
+  the same value, the function will close it. The output is the number of points inside the polygon, excluding all
+  points in the perimeter.
+
+  This function makes use of Pick's Theorem."
+  [vertices]
+  (let [area (polygon-area vertices)]
+    (if (pos? area)
+      (- (inc area) (/ (perimeter-length vertices) 2))
+      0)))
