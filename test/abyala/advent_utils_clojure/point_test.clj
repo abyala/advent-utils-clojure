@@ -2,6 +2,20 @@
   (:require [clojure.test :refer :all]
             [abyala.advent-utils-clojure.point :as p]))
 
+(deftest move-test
+  (testing "2-arity move"
+    (are [p dest expected] (= (p/move p dest) expected)
+                           [1 2] [3 4] [4 6]
+                           [1 2] [0 0] [1 2]
+                           [1 2] [-3 -4] [-2 -2]))
+  (testing "3-arity move"
+    (are [p dest n expected] (= (p/move p dest n) expected)
+                             [1 2] [3 4] 0 [1 2]
+                             [1 2] [3 4] 1 [4 6]
+                             [1 2] [3 4] 2 [7 10]
+                             [1 2] [3 4] -1 [-2 -2]
+                             [1 2] [3 4] -2 [-5 -6])))
+
 (deftest parse-to-char-coods-test
   (is (= (p/parse-to-char-coords "12\n34")
          (list [[0 0] \1] [[1 0] \2] [[0 1] \3] [[1 1] \4])))

@@ -8,6 +8,14 @@
 (def down [0 -1])
 (def cardinal-directions [left right up down])
 
+(defn move
+  "Takes in two points and adds their x and y values together, showing a point moving by a destination amount. This
+  function takes in an optional third argument `n` for the number of times to execute this move."
+  ([point dest] (mapv + point dest))
+  ([point dest n] (case n 0 point
+                          1 (mapv + point dest)
+                          (mapv + point (map #(* % n) dest)))))
+
 (defn parse-to-char-coords
   "Given an input string of a multi-line grid of single characters, returns a lazy sequence of [[x y] c] tuples of
   [x y] coords to each character c. If the function f is provided, it transforms each value c using that function."
