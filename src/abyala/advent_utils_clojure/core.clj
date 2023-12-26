@@ -74,6 +74,15 @@
          (list (first s))
          (cons (first s) (take-until pred (rest s))))))))
 
+(defn drop-until
+  "Returns a lazy sequence of the items in coll starting one value after the first item for which (pred item) returns
+   logical `true`."
+  [pred coll]
+  (cond
+    (empty? coll) ()
+    (pred (first coll)) (rest coll)
+    :else (recur pred (rest coll))))
+
 (defn first-when [pred coll]
   (first (filter pred coll)))
 

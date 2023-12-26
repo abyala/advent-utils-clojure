@@ -118,6 +118,15 @@
                         [1 3 5] [1 3 5]
                         [1 3 5 6 7] (list 1 3 5 6)))
 
+(deftest drop-until-test
+  (are [input expected] (= expected (c/drop-until even? input))
+                        nil ()
+                        () ()
+                        [] ()
+                        [1 3 5] ()
+                        [1 3 5 6 7] (list 7)
+                        [1 3 5 6 7 8] (list 7 8)))
+
 (deftest re-matcher-seq-test
   (are [pattern s expected] (= (c/re-matcher-seq pattern s) expected)
                             #"\d+" "abc" nil
