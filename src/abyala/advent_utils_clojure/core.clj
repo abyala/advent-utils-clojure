@@ -134,3 +134,24 @@
   "Creates a string by repeating a value `s` a number of times."
   [n s]
   (apply str (repeat n s)))
+
+(defn unique-combinations
+  "Takes a collection of values and returns a vector of all unique combination of `n` elements in the collection.
+  Since ordering does not matter in a combination, calling `(unique-combinations [:a :b])` returns `([:a :b]) ` and
+  not `([:a :b] [:b :a])`. `n` must be a positive integer for the number of elements in each collection to return,
+  with a default value of 2 for unique pairs."
+  ([coll] (unique-combinations 2 coll))
+  ([n coll]
+   {:pre [(pos-int? n)]}
+   (cond
+     (nil? coll) ()
+     (empty? coll) ()
+     (not (indexed? coll)) (recur n (vec coll))
+     (= n 1) (map vector coll)
+     (= n 2) (let [size (count coll)]
+               (for [v1 (range size)
+                     v2 (range (inc v1) size)]
+                 [(coll v1) (coll v2)]))
+     :else (mapcat (fn [idx] (keep (fn [nested] (when (seq nested) (apply conj [(coll idx)] nested)))
+                                   (unique-combinations (dec n) (vec (drop (inc idx) coll)))))
+                   (range (count coll))))))

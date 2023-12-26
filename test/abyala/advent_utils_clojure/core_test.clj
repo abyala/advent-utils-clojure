@@ -168,3 +168,28 @@
                       3 "a" "aaa"
                       3 :b ":b:b:b"
                       3 5 "555"))
+
+(deftest unique-combinations-test
+  (are [n coll expected] (= (c/unique-combinations n coll) expected)
+                         1 nil ()
+                         1 () ()
+                         1 [] ()
+                         2 nil ()
+                         2 () ()
+                         2 [] ()
+                         1 [:a :b :c] [[:a] [:b] [:c]]
+                         1 (list :a :b :c) [[:a] [:b] [:c]]
+                         1 [[:a :b] 2 :something] [[[:a :b]] [2] [:something]]
+                         2 [1 2 3] [[1 2] [1 3] [2 3]]
+                         2 [[:a :b] [:c :d] :e] [[[:a :b] [:c :d]], [[:a :b] :e], [[:c :d] :e]]
+                         3 [:a :b :c :d] [[:a :b :c] [:a :b :d] [:a :c :d] [:b :c :d]]
+                         4 (list 1 2 3 4 5 6) [[1 2 3 4] [1 2 3 5] [1 2 3 6] [1 2 4 5] [1 2 4 6] [1 2 5 6]
+                                               [1 3 4 5] [1 3 4 6] [1 3 5 6] [1 4 5 6]
+                                               [2 3 4 5] [2 3 4 6] [2 3 5 6] [2 4 5 6]
+                                               [3 4 5 6]])
+  (are [coll expected] (= (c/unique-combinations coll) expected)
+                       [:a :b :c] [[:a :b] [:a :c] [:b :c]]
+                       (list 1) ()
+                       (list 1 2) [[1 2]])
+
+  (is (thrown? AssertionError (c/unique-combinations 0 [:a :b :c]))))
