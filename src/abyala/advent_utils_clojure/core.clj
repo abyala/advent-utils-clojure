@@ -155,3 +155,9 @@
      :else (mapcat (fn [idx] (keep (fn [nested] (when (seq nested) (apply conj [(coll idx)] nested)))
                                    (unique-combinations (dec n) (vec (drop (inc idx) coll)))))
                    (range (count coll))))))
+
+(defn sum
+  "Sums the values in a collection. If a function `f` is provided, then map `f` to each value in the collection
+  before adding them together."
+  ([coll] (apply + coll))
+  ([f coll] (transduce (map f) + coll)))

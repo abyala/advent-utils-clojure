@@ -193,3 +193,19 @@
                        (list 1 2) [[1 2]])
 
   (is (thrown? AssertionError (c/unique-combinations 0 [:a :b :c]))))
+
+(deftest sum-test
+  (testing "Single-argument"
+    (are [coll expected] (= (c/sum coll) expected)
+                         nil 0
+                         [] 0
+                         [0] 0
+                         [1 2 3] 6
+                         (range 5) 10
+                         (list -1 0 3 -6) -4))
+  (testing "Two-arguments"
+    (are [f coll expected] (= (c/sum f coll) expected)
+                           identity [1 2 3] 6
+                           abs [1 -2 -3] 6
+                           #(+ % %) [1 2 3] 12
+                           parse-long ["1" "2" "-6"] -3)))
