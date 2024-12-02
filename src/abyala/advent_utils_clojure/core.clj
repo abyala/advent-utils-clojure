@@ -161,3 +161,15 @@
   before adding them together."
   ([coll] (apply + coll))
   ([f coll] (transduce (map f) + coll)))
+
+(defn remove-each-subrange
+  "Returns the result of every way to remove a subrange from a collection, defaulting to a removal length of 1.
+  The length must be a positive integer or it will fail with an assertion error. The function will return an empty
+  list if the value of `n` is at least the size of the input collection."
+  ([coll] (remove-each-subrange 1 coll))
+  ([n coll]
+   {:pre [(pos-int? n)]}
+   (if (< n (count coll))
+     (map #(concat (take % coll) (drop (+ n %) coll))
+          (range (- (count coll) n -1)))
+     ())))

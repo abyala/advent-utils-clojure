@@ -209,3 +209,25 @@
                            abs [1 -2 -3] 6
                            #(+ % %) [1 2 3] 12
                            parse-long ["1" "2" "-6"] -3)))
+
+(deftest remove-each-subrange-test
+  (testing "Single argument"
+    (are [coll expected] (= (c/remove-each-subrange coll) expected)
+                          nil ()
+                          () ()
+                          [] ()
+                          [1] ()
+                          (range 4) [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]
+                          [0 1 2 3] [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]))
+  (testing "Two arguments"
+    (are [n coll expected] (= (c/remove-each-subrange n coll) expected)
+                           1 nil ()
+                           1 [] ()
+                           1 [1] ()
+                           1 (range 4) [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]
+                           2 (range 4) [[2 3] [0 3] [0 1]]
+                           3 (range 4) [[3] [0]]
+                           4 (range 4) ()
+                           5 (range 4) ())
+    (testing "Invalid removal size"
+      (is (thrown? AssertionError (c/remove-each-subrange 0 (range 4)))))))
