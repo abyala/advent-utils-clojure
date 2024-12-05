@@ -231,3 +231,33 @@
                            5 (range 4) ())
     (testing "Invalid removal size"
       (is (thrown? AssertionError (c/remove-each-subrange 0 (range 4)))))))
+
+(deftest middle-test
+  (testing "Only collection"
+    (are [coll expected] (= (c/middle coll) expected)
+                         nil nil
+                         () nil
+                         (list :a) :a
+                         [:a] :a
+                         [:a :b :c :d :e] :c
+                         (list :a :b :c :d :e) :c)
+    (is (thrown? IllegalArgumentException (c/middle [:a :b :c :d])))
+    (is (thrown? IllegalArgumentException (c/middle (range 4))))
+    (is (thrown? IllegalArgumentException (c/middle :fail [:a :b :c :d])))
+    (is (thrown? IllegalArgumentException (c/middle :fail (range 4)))))
+  (testing "Go low"
+    (are [coll expected] (= (c/middle :low coll) expected)
+                         nil nil
+                         () nil
+                         (list :a) :a
+                         [:a] :a
+                         [:a :b :c :d] :b
+                         (range 4) 1))
+  (testing "Go high"
+    (are [coll expected] (= (c/middle :high coll) expected)
+                         nil nil
+                         () nil
+                         (list :a) :a
+                         [:a] :a
+                         [:a :b :c :d] :c
+                         (range 4) 2)))

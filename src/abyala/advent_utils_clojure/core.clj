@@ -173,3 +173,19 @@
      (map #(concat (take % coll) (drop (+ n %) coll))
           (range (- (count coll) n -1)))
      ())))
+
+(defn middle
+  "Returns the value in the middle of a collection. If given an empty collection, it returns nil. If given a collection
+  with an odd number of values, it picks the middle one. If given a collection with an even number of values, it
+  decides based on the value of the `middle-strategy` argument, which accepts values of `:low`, `:high` or `:fail`,
+  where `:fail` (the default) throws an IllegalArgumentException."
+  ([coll] (middle :fail coll))
+  ([middle-strategy coll]
+   {:pre [(#{:low :high :fail} middle-strategy)]}
+   (when (seq coll)
+     (let [c (count coll)
+           idx (quot c 2)]
+       (cond (or (odd? c) (= middle-strategy :high)) (nth coll idx)
+             (= middle-strategy :low) (nth coll (dec idx))
+             :else (throw (IllegalArgumentException.
+                            "Function \"middle\" cannot be called with an even-length collection without a middle-strategy.")))))))
