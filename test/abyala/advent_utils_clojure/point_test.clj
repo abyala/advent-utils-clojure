@@ -16,6 +16,13 @@
                              [1 2] [3 4] -1 [-2 -2]
                              [1 2] [3 4] -2 [-5 -6])))
 
+(deftest coord-distance-test
+  (are [p1 p2 expected] (= (p/coord-distance p1 p2) expected)
+                        [1 2] [4 6] [3 4]
+                        [1 1] [3 1] [2 0]
+                        [1 1] [1 3] [0 2]
+                        [1 2] [1 2] [0 0]))
+
 (deftest parse-to-char-coods-test
   (is (= (p/parse-to-char-coords "12\n34")
          (list [[0 0] \1] [[1 0] \2] [[0 1] \3] [[1 1] \4])))

@@ -62,6 +62,11 @@
   (+ (abs (- x1 x2))
      (abs (- y1 y2))))
 
+(defn coord-distance
+  "Returns the distance between two points as represented by another point, essentially returning `[dx dy]`."
+  [p1 p2]
+  (mapv - p2 p1))
+
 (defn bounding-box [points]
   (letfn [(min-max [nums] ((juxt (partial apply min) (partial apply max)) nums))]
     (let [[x-min x-max] (->> points (map first) min-max)
