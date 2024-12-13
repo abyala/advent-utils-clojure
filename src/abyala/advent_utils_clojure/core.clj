@@ -39,6 +39,11 @@
                    (take-nth 2)
                    (map (partial map xf)))))
 
+(defn only-when
+  "Returns v if (f v) is truthy, or else returns nil."
+  [f v]
+  (when (f v) v))
+
 (defn split-longs
   "Given an input string, returns a sequence of all numbers extracted, coerced into longs. Any delimiter is acceptable,
   including whitespace, symbols, or any non-numeric character."

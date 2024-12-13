@@ -14,6 +14,23 @@
            \-
            \.))
 
+(deftest only-when-test
+  (testing "Fails the predicate"
+    (are [input] (nil? (c/only-when even? input))
+                 1
+                 -5)
+    (are [input] (nil? (c/only-when seq input))
+                 nil
+                 ()
+                 []))
+  (testing "Passes the predicate"
+    (are [input] (= input (c/only-when even? input))
+                 2
+                 0)
+    (are [input] (= input (c/only-when seq input))
+                 [1]
+                 (range 3))))
+
 (deftest count-when-test
   (are [input expected] (= expected (c/count-when even? input))
                         nil 0
@@ -88,14 +105,14 @@
                           {:a #{1}} :a 1 {:a #{1}})))
 
 (deftest parse-binary-test
-    (are [input expected] (= expected (c/parse-binary input))
-                          "0" 0
-                          "1" 1
-                          "10" 2)
-    (is (thrown? Exception (c/parse-binary nil)))
-    (is (thrown? Exception (c/parse-binary "")))
-    (is (thrown? Exception (c/parse-binary "3")))
-    (is (thrown? Exception (c/parse-binary "five"))))
+  (are [input expected] (= expected (c/parse-binary input))
+                        "0" 0
+                        "1" 1
+                        "10" 2)
+  (is (thrown? Exception (c/parse-binary nil)))
+  (is (thrown? Exception (c/parse-binary "")))
+  (is (thrown? Exception (c/parse-binary "3")))
+  (is (thrown? Exception (c/parse-binary "five"))))
 
 (deftest parse-int-char-test
   (are [input expected] (= expected (c/parse-int-char input))
@@ -213,12 +230,12 @@
 (deftest remove-each-subrange-test
   (testing "Single argument"
     (are [coll expected] (= (c/remove-each-subrange coll) expected)
-                          nil ()
-                          () ()
-                          [] ()
-                          [1] ()
-                          (range 4) [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]
-                          [0 1 2 3] [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]))
+                         nil ()
+                         () ()
+                         [] ()
+                         [1] ()
+                         (range 4) [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]
+                         [0 1 2 3] [[1 2 3] [0 2 3] [0 1 3] [0 1 2]]))
   (testing "Two arguments"
     (are [n coll expected] (= (c/remove-each-subrange n coll) expected)
                            1 nil ()
