@@ -48,7 +48,7 @@
   "Given an input string, returns a sequence of all numbers extracted, coerced into longs. Any delimiter is acceptable,
   including whitespace, symbols, or any non-numeric character."
   [input]
-  (map parse-long (re-seq #"\d+" input)))
+  (map parse-long (re-seq #"-?\d+" input)))
 
 (defn count-when
   "Returns the number of items in a collection that return a truthy response to a predicate filter."

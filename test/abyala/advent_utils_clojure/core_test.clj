@@ -154,8 +154,12 @@
 (deftest split-longs-test
   (are [input expected] (= (c/split-longs input) expected)
                         "1" [1]
+                        "-1" [-1]
                         "12" [12]
                         "1 2" [1 2]
+                        "-1 -2" [-1 -2]
+                        "1~2" [1 2]
+                        "1-2" [1 -2]
                         "abc" ()
                         "abc12de34f" [12 34]))
 
