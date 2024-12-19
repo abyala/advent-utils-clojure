@@ -5,11 +5,11 @@
 (defn- depth-first-append-values [old-vals new-vals]
   (concat new-vals old-vals))
 
-(defn- stateless-search [append-vals-fn initial-vals next-vals-fn pred]
+(defn- stateless-search [append-vals-fn pred next-vals-fn initial-vals]
   (cond
     ; Validate initial-vals
     (nil? initial-vals) nil
-    (not (coll? initial-vals)) (recur append-vals-fn (list initial-vals) next-vals-fn pred)
+    (not (coll? initial-vals)) (recur append-vals-fn pred next-vals-fn (list initial-vals))
 
     ; Good to go
     :else (loop [vals (seq initial-vals)]
@@ -25,8 +25,8 @@
   will be invoked to identify additional values, if any, to add to the end of the initial-vals queue. `next-vals-fn`
   is expected to take in a single argument for the current value being evaluated."
 
-  [initial-vals next-vals-fn pred]
-  (stateless-search breadth-first-append-values initial-vals next-vals-fn pred))
+  [pred next-vals-fn initial-vals]
+  (stateless-search breadth-first-append-values pred next-vals-fn initial-vals))
 
 
 (defn depth-first
@@ -35,8 +35,8 @@
   will be invoked to identify additional values, if any, to add to the front of the initial-vals queue. `next-vals-fn`
   is expected to take in a single argument for the current value being evaluated."
 
-  [initial-vals next-vals-fn pred]
-  (stateless-search depth-first-append-values initial-vals next-vals-fn pred))
+  [pred next-vals-fn initial-vals]
+  (stateless-search depth-first-append-values pred next-vals-fn initial-vals))
 
 (defrecord DoneSearching [value])
 (defrecord KeepSearching [next-state next-vals])
@@ -53,7 +53,7 @@
    (assert ((some-fn nil? coll?) next-vals) "next-vals must be either nil or a collection")
    (->KeepSearching next-state next-vals)))
 
-(defn- stateful-search [append-vals-fn initial-state initial-vals eval-fn]
+(defn- stateful-search [append-vals-fn eval-fn initial-state initial-vals]
   (loop [vals (seq initial-vals), state initial-state]
     (when (seq vals)
       (let [[v & v'] vals
@@ -68,12 +68,12 @@
   "Similar to [[breadth-first]], this performs a breadth-first search but retains state between evaluations of searched
   values. The `eval-fn` must take two arguments, the `state` and the `value` being considered, and its return must
   call either [[done-searching]] or [[keep-searching]]. "
-  [initial-state initial-vals eval-fn]
-  (stateful-search breadth-first-append-values initial-state initial-vals eval-fn))
+  [eval-fn initial-state initial-vals]
+  (stateful-search breadth-first-append-values eval-fn initial-state initial-vals))
 
 (defn depth-first-stateful
   "Similar to [[depth-first]], this performs a depth-first search but retains state between evaluations of searched
   values. The `eval-fn` must take two arguments, the `state` and the `value` being considered, and its return must
   call either [[done-searching]] or [[keep-searching]]. "
-  [initial-state initial-vals eval-fn]
-  (stateful-search depth-first-append-values initial-state initial-vals eval-fn))
+  [eval-fn initial-state initial-vals]
+  (stateful-search depth-first-append-values eval-fn initial-state initial-vals))
