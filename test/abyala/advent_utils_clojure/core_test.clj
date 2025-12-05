@@ -66,6 +66,20 @@
                         (range 10) 0
                         [3 4 5] 1))
 
+(deftest index-of-last-test
+  (are [input] (nil? (c/index-of-last even? input))
+               nil
+               ()
+               []
+               (list 3)
+               [3 5 7]
+               (range 1 11 2))
+  (are [input expected] (= expected (c/index-of-last even? input))
+                        [2] 0
+                        (range 10) 8
+                        [3 4 5] 1
+                        [3 4 5 6] 3))
+
 (deftest into-map-by-test
   (testing "Numeric values (square function)"
     (are [input expected] (= expected (c/into-map-by #(* % %) input))

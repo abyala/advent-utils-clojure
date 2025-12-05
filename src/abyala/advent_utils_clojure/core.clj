@@ -60,6 +60,11 @@
   [pred coll]
   (first (keep-indexed #(when (pred %2) %1) coll)))
 
+(defn index-of-last
+  "Returns the index of the last value in a collection that returns a truthy response to a predicate filter."
+  [pred coll]
+  (last (keep-indexed #(when (pred %2) %1) coll)))
+
 (defn take-until
   "Returns a lazy sequence of successive items from coll while `(pred item)` returns logical `true`,
   plus the first value that does not. Returns a transducer when no collection is provided."
