@@ -199,3 +199,15 @@
              (= middle-strategy :low) (nth coll (dec idx))
              :else (throw (IllegalArgumentException.
                             "Function \"middle\" cannot be called with an even-length collection without a middle-strategy.")))))))
+
+(defn insert-at
+  "Inserts the value `x` into the existing vector `v` at index `x`, shuffling other items after it. This will throw
+  an `IndexOutOfBoundsException` if `idx` is not between 0 and the size of the vector."
+  [v idx x]
+  (into (subvec v 0 idx) (concat [x] (subvec v idx))))
+
+(defn remove-at
+  "Removes a value within the vector `v` at index `idx`, shuffling other items to fill the missing space. This will
+  throw an `IndexOutOfBoundsException` if `idx` is not between 0 and the largest index in the vector."
+  [v idx]
+  (into (subvec v 0 idx) (subvec v (inc idx))))

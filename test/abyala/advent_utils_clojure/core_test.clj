@@ -296,3 +296,28 @@
                          [:a] :a
                          [:a :b :c :d] :c
                          (range 4) 2)))
+
+(deftest insert-at-test
+  (are [coll idx expected] (= expected (c/insert-at coll idx :added))
+                           [] 0 [:added]
+                           [:a] 0 [:added :a]
+                           [:a] 1 [:a :added]
+                           [:a :b] 1 [:a :added :b]
+                           [:a :b] 2 [:a :b :added])
+  (is (thrown? IndexOutOfBoundsException (c/insert-at [] -1 :fail)))
+  (is (thrown? IndexOutOfBoundsException (c/insert-at [] 1 :fail)))
+  (is (thrown? IndexOutOfBoundsException (c/insert-at [:a :b] -1 :fail)))
+  (is (thrown? IndexOutOfBoundsException (c/insert-at [:a :b] 3 :fail))))
+
+(deftest remove-at-test
+  (are [coll idx expected] (= expected (c/remove-at coll idx))
+                           [:a] 0 []
+                           [:a :b] 0 [:b]
+                           [:a :b] 1 [:a]
+                           [:a :b :c] 1 [:a :c]
+                           [:a :b :c] 2 [:a :b])
+  (is (thrown? IndexOutOfBoundsException (c/remove-at [] -1)))
+  (is (thrown? IndexOutOfBoundsException (c/remove-at [] 0)))
+  (is (thrown? IndexOutOfBoundsException (c/remove-at [] 1)))
+  (is (thrown? IndexOutOfBoundsException (c/remove-at [:a] -1)))
+  (is (thrown? IndexOutOfBoundsException (c/remove-at [:a] 1))))
