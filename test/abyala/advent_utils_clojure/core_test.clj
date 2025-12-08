@@ -53,6 +53,18 @@
                         (range 10) 0
                         [3 4 5] 4))
 
+(deftest first-some-test
+  (are [f input] (nil? (c/first-some f input))
+                 identity nil
+                 identity ()
+                 identity []
+                 first []
+                 (fn [_] nil) [1 2 3])
+  (are [f input expected] (= expected (c/first-some f input))
+                          even? [1 2 3] false               ;It's weird, but the predicate's false is non-nil
+                          str/upper-case ["hi" "hello"] "HI"
+                          (fn [v] (when (even? v) (str v " is even"))) [1 2 3] "2 is even"))
+
 (deftest index-of-first-test
   (are [input] (nil? (c/index-of-first even? input))
                nil
@@ -168,15 +180,15 @@
 (deftest split-longs-test
   (testing "Include negatives"
     (are [input expected] (= (c/split-longs input) expected)
-                         "1" [1]
-                         "-1" [-1]
-                         "12" [12]
-                         "1 2" [1 2]
-                         "-1 -2" [-1 -2]
-                         "1~2" [1 2]
-                         "1-2" [1 -2]
-                         "abc" ()
-                         "abc12de34f" [12 34]))
+                          "1" [1]
+                          "-1" [-1]
+                          "12" [12]
+                          "1 2" [1 2]
+                          "-1 -2" [-1 -2]
+                          "1~2" [1 2]
+                          "1-2" [1 -2]
+                          "abc" ()
+                          "abc12de34f" [12 34]))
   (testing "Don't include negatives"
     (are [input expected] (= (c/split-longs input false) expected)
                           "1" [1]
@@ -256,6 +268,24 @@
                            abs [1 -2 -3] 6
                            #(+ % %) [1 2 3] 12
                            parse-long ["1" "2" "-6"] -3)))
+
+(deftest product-test
+  (testing "Single-argument"
+    (are [coll expected] (= expected (c/product coll))
+                         nil 1
+                         [] 1
+                         [0] 0
+                         [1] 1
+                         [1 2 3] 6
+                         (range 5) 0
+                         (range 1 5) 24
+                         (list -1 3 -6) 18))
+  (testing "Two-arguments"
+    (are [f coll expected] (= expected (c/product f coll))
+                           identity [1 3 -5] -15
+                           abs [1 3 -5] 15
+                           #(+ % %) [1 3 -5] -120
+                           parse-long ["1" "2" "-6"] -12)))
 
 (deftest remove-each-subrange-test
   (testing "Single argument"

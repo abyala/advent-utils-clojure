@@ -94,8 +94,15 @@
     (pred (first coll)) (rest coll)
     :else (recur pred (rest coll))))
 
-(defn first-when [pred coll]
+(defn first-when
+  "Returns the first value in the collection that returns a truthy value from the predicate."
+  [pred coll]
   (first (filter pred coll)))
+
+(defn first-some
+  "Returns the first non-nil value from applying the function `f` to a collection."
+  [f coll]
+  (first (keep f coll)))
 
 (defn into-map-by [f coll]
   (reduce #(assoc %1 (f %2) %2) {} coll))
@@ -172,6 +179,12 @@
   before adding them together."
   ([coll] (apply + coll))
   ([f coll] (transduce (map f) + coll)))
+
+(defn product
+  "Multiplies the values in a collection. If a function `f` is provided, then map `f` to each value in the collection
+  before multiplying them together."
+  ([coll] (apply * coll))
+  ([f coll] (transduce (map f) * coll)))
 
 (defn remove-each-subrange
   "Returns the result of every way to remove a subrange from a collection, defaulting to a removal length of 1.
